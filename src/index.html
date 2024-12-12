@@ -33,47 +33,78 @@
     <script src="renderer.js"></script>
 
     <style>
-        body { background-color: #2E2E2E; color: #AAAAAA; }
-        #app-list { height: 100%; overflow-y: auto; background: #2E2E2E; color: #AAAAAA; border-right: 1px solid #4E4E4E; }
-        #details { height: 100%; }
-        .key { font-weight: bold; }
+        /* General Styles */
+        body {
+            background-color: #1E1E1E; /* Fondo más oscuro */
+            color: #E1E1E1; /* Texto más claro */
+            font-family: Arial, sans-serif;
+        }
 
         html, body {
-            height: 100%; /* Asegúrate de que el HTML y el body ocupen todo el alto */
+            height: 100%;
             margin: 0;
-            overflow: hidden; /* Evita que la página haga scroll */
+            overflow: hidden;
             padding-top: 6px;
         }
 
         .container-fluid {
-            height: 100%; /* Este contenedor también debe tener un alto del 100% */
+            height: 100%;
         }
 
         .row {
-            height: 100%; /* Asegura que la fila ocupe todo el alto */
+            height: 100%;
         }
 
+        /* Scrollable Lists */
         .scrollable-list {
-            height: 100%; /* Ocupa todo el alto disponible */
-            overflow-y: auto; /* Habilita el scroll vertical */
-            background: #2E2E2E;
-            color: #AAAAAA;
-            border-right: 1px solid #4E4E4E;
+            height: 100%;
+            overflow-y: auto;
+            background: #252526; /* Fondo más oscuro para contraste */
+            color: #E1E1E1;
+            border-right: 1px solid #3C3C3C;
         }
 
-        /* Estilo para la lista de apps */
         #app-list div {
-            cursor: pointer; /* Cambia el cursor a una mano al pasar el mouse */
+            cursor: pointer;
+            padding: 8px 10px;
+            transition: background-color 0.3s ease;
         }
 
         #app-list div:hover {
-            background-color: #3E3E3E; /* Agrega un efecto de hover */
+            background-color: #3C3C3C;
         }
 
         #app-list div.selected {
-            background-color: #3E3E3E; /* Mismo fondo que el hover */
+            background-color: #007ACC; /* Azul para la selección */
+            color: #FFFFFF;
         }
 
+        /* Search Bar */
+        #searchBar {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #3C3C3C;
+            border-radius: 5px;
+            background-color: #2D2D30;
+            color: #E1E1E1;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #searchBar:focus {
+            border-color: #007ACC;
+            box-shadow: 0 0 5px #007ACC;
+        }
+
+        #searchBar::placeholder {
+            color: #A1A1A1;
+            opacity: 0.8;
+        }
+
+        /* Details Panel */
         #details {
             display: flex;
             flex-direction: column;
@@ -81,118 +112,72 @@
         }
 
         #details-table-container {
-            flex: 1; /* Ocupa el espacio restante */
-            overflow-y: auto; /* Permite scroll vertical */
-            border-top: 1px solid #4E4E4E;
-            margin-top: 10px; /* Añade un pequeño margen, opcional */
-            margin-bottom: 20px;
+            flex: 1;
+            overflow-y: auto;
+            border-top: 1px solid #3C3C3C;
+            margin-top: 10px;
         }
 
-        /* Mantén el diseño responsivo de la tabla */
-        .table {
-            width: 100%; /* Asegura que la tabla ocupe todo el ancho del contenedor */
-            table-layout: fixed; /* Evita que las celdas crezcan demasiado */
-        }
-
-        .table th, .table td {
-            word-wrap: break-word; /* Permite dividir palabras largas */
-        }
-
-        /* Opcionales: Estilo del scrollbar para que coincida con el tema oscuro */
-        #details-table-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #details-table-container::-webkit-scrollbar-thumb {
-            background: #4E4E4E;
-            border-radius: 4px;
-        }
-
-        #details-table-container::-webkit-scrollbar-thumb:hover {
-            background: #6E6E6E;
-        }
-
-        #details-table-container::-webkit-scrollbar-track {
-            background: #2E2E2E;
-        }
-
-        /* Estilo para el scroll */
-        #app-list::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #app-list::-webkit-scrollbar-thumb {
-            background: #4E4E4E;
-            border-radius: 4px;
-        }
-
-        #app-list::-webkit-scrollbar-thumb:hover {
-            background: #6E6E6E;
-        }
-
-        #app-list::-webkit-scrollbar-track {
-            background: #2E2E2E;
-        }
-
-        #searchBar {
-            width: 100%;
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-            border: 2px solid #4E4E4E; /* Borde oscuro */
-            border-radius: 8px; /* Bordes redondeados */
-            background-color: #3C3C3C; /* Fondo ligeramente más claro */
-            color: #FFFFFF; /* Color del texto */
-            font-size: 16px; /* Tamaño de fuente */
-            outline: none; /* Quita el contorno azul predeterminado */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #searchBar:focus {
-            border-color: #AAAAAA; /* Borde más claro al enfocar */
-            box-shadow: 0 0 5px #AAAAAA; /* Sombra al enfocar */
-        }
-
-        #searchBar::placeholder {
-            color: #AAAAAA; /* Color del texto placeholder */
-            opacity: 0.7; /* Opacidad del texto placeholder */
-        }
-
+        /* Table Styles */
         table {
-            background-color: #2E2E2E; /* Fondo de la tabla acorde con el fondo general */
-            color: #AAAAAA; /* Color del texto */
-            border-collapse: collapse; /* Remueve espacios entre bordes */
+            background-color: #252526;
+            color: #E1E1E1;
+            border-collapse: collapse;
             width: 100%;
         }
 
         th, td {
-            border: 1px solid #4E4E4E; /* Bordes oscuros */
-            padding: 10px; /* Espaciado interno */
+            border: 1px solid #3C3C3C;
+            padding: 8px;
             text-align: left;
+            font-size: 14px;
         }
 
         th {
-            background-color: #3C3C3C; /* Fondo de encabezados */
-            color: #FFFFFF; /* Texto más claro en encabezados */
+            background-color: #333333;
+            color: #FFFFFF;
             font-weight: bold;
         }
 
         tr:nth-child(even) {
-            background-color: #383838; /* Fondo alternativo para filas pares */
+            background-color: #2D2D30;
         }
 
         tr:hover {
-            background-color: #505050; /* Fondo al pasar el mouse */
+            background-color: #3C3C3C;
         }
 
         td a {
-            color: #1E90FF; /* Enlaces en azul claro */
-            text-decoration: none; /* Quita el subrayado */
+            color: #1E90FF;
+            text-decoration: none;
         }
 
         td a:hover {
-            text-decoration: underline; /* Subrayado al pasar el mouse */
+            text-decoration: underline;
         }
+
+        /* Scrollbars */
+        #details-table-container::-webkit-scrollbar,
+        #app-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #details-table-container::-webkit-scrollbar-thumb,
+        #app-list::-webkit-scrollbar-thumb {
+            background: #3C3C3C;
+            border-radius: 4px;
+        }
+
+        #details-table-container::-webkit-scrollbar-thumb:hover,
+        #app-list::-webkit-scrollbar-thumb:hover {
+            background: #5A5A5A;
+        }
+
+        #details-table-container::-webkit-scrollbar-track,
+        #app-list::-webkit-scrollbar-track {
+            background: #252526;
+        }
+
     </style>
 </body>
 </html>
