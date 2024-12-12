@@ -156,7 +156,7 @@ function adjustAppListHeight() {
     // Calcular la altura restante de la ventana
     const availableHeight = window.innerHeight - totalOffset - parentPaddingBottom;
 
-    appList.style.height = `${availableHeight - 20}px`;
+    appList.style.height = `${availableHeight - 30}px`;
 }
 
 
