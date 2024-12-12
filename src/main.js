@@ -37,9 +37,9 @@ function createMenuTemplate() {
         {
             label: 'View',
             submenu: [
-                { label: 'Native', click: () => mainWindow.webContents.send('filter', 'Native') },
-                { label: 'AUR', click: () => mainWindow.webContents.send('filter', 'AUR') },
-                { label: 'All', click: () => mainWindow.webContents.send('filter', 'All') },
+                { label: 'Native Packages', click: () => mainWindow.webContents.send('filter', 'Native') },
+                { label: 'AUR Packages', click: () => mainWindow.webContents.send('filter', 'AUR') },
+                { label: 'All Packages', click: () => mainWindow.webContents.send('filter', 'All') },
             ],
         },
         {
