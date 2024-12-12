@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                <input
+                    type="text"
+                    id="searchBar"
+                    placeholder="Search for apps..."
+                    />
+                <div id="app-list" class="scrollable-list"></div>
+            </div>
+            <div class="col-9" id="details">
+                <h1 id="app-title"></h1>
+                <h4 id="app-version"></h4>
+                <p id="app-description"></p>
+
+                <div id="details-table-container">
+                    <table>
+                        <tbody id="details-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+
+    <style>
+        body { background-color: #2E2E2E; color: #AAAAAA; }
+        #app-list { height: 100%; overflow-y: auto; background: #2E2E2E; color: #AAAAAA; border-right: 1px solid #4E4E4E; }
+        #details { height: 100%; }
+        .key { font-weight: bold; }
+
+        html, body {
+            height: 100%; /* Asegúrate de que el HTML y el body ocupen todo el alto */
+            margin: 0;
+            overflow: hidden; /* Evita que la página haga scroll */
+            padding-top: 6px;
+        }
+
+        .container-fluid {
+            height: 100%; /* Este contenedor también debe tener un alto del 100% */
+        }
+
+        .row {
+            height: 100%; /* Asegura que la fila ocupe todo el alto */
+        }
+
+        .scrollable-list {
+            height: 100%; /* Ocupa todo el alto disponible */
+            overflow-y: auto; /* Habilita el scroll vertical */
+            background: #2E2E2E;
+            color: #AAAAAA;
+            border-right: 1px solid #4E4E4E;
+        }
+
+        /* Estilo para la lista de apps */
+        #app-list div {
+            cursor: pointer; /* Cambia el cursor a una mano al pasar el mouse */
+        }
+
+        #app-list div:hover {
+            background-color: #3E3E3E; /* Agrega un efecto de hover */
+        }
+
+        #app-list div.selected {
+            background-color: #3E3E3E; /* Mismo fondo que el hover */
+        }
+
+        #details {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #details-table-container {
+            flex: 1; /* Ocupa el espacio restante */
+            overflow-y: auto; /* Permite scroll vertical */
+            border-top: 1px solid #4E4E4E;
+            margin-top: 10px; /* Añade un pequeño margen, opcional */
+        }
+
+        /* Mantén el diseño responsivo de la tabla */
+        .table {
+            width: 100%; /* Asegura que la tabla ocupe todo el ancho del contenedor */
+            table-layout: fixed; /* Evita que las celdas crezcan demasiado */
+        }
+
+        .table th, .table td {
+            word-wrap: break-word; /* Permite dividir palabras largas */
+        }
+
+        /* Opcionales: Estilo del scrollbar para que coincida con el tema oscuro */
+        #details-table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #details-table-container::-webkit-scrollbar-thumb {
+            background: #4E4E4E;
+            border-radius: 4px;
+        }
+
+        #details-table-container::-webkit-scrollbar-thumb:hover {
+            background: #6E6E6E;
+        }
+
+        #details-table-container::-webkit-scrollbar-track {
+            background: #2E2E2E;
+        }
+
+        /* Estilo para el scroll */
+        #app-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #app-list::-webkit-scrollbar-thumb {
+            background: #4E4E4E;
+            border-radius: 4px;
+        }
+
+        #app-list::-webkit-scrollbar-thumb:hover {
+            background: #6E6E6E;
+        }
+
+        #app-list::-webkit-scrollbar-track {
+            background: #2E2E2E;
+        }
+
+        #searchBar {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 2px solid #4E4E4E; /* Borde oscuro */
+            border-radius: 8px; /* Bordes redondeados */
+            background-color: #3C3C3C; /* Fondo ligeramente más claro */
+            color: #FFFFFF; /* Color del texto */
+            font-size: 16px; /* Tamaño de fuente */
+            outline: none; /* Quita el contorno azul predeterminado */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #searchBar:focus {
+            border-color: #AAAAAA; /* Borde más claro al enfocar */
+            box-shadow: 0 0 5px #AAAAAA; /* Sombra al enfocar */
+        }
+
+        #searchBar::placeholder {
+            color: #AAAAAA; /* Color del texto placeholder */
+            opacity: 0.7; /* Opacidad del texto placeholder */
+        }
+
+        table {
+            background-color: #2E2E2E; /* Fondo de la tabla acorde con el fondo general */
+            color: #AAAAAA; /* Color del texto */
+            border-collapse: collapse; /* Remueve espacios entre bordes */
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #4E4E4E; /* Bordes oscuros */
+            padding: 10px; /* Espaciado interno */
+            text-align: left;
+        }
+
+        th {
+            background-color: #3C3C3C; /* Fondo de encabezados */
+            color: #FFFFFF; /* Texto más claro en encabezados */
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #383838; /* Fondo alternativo para filas pares */
+        }
+
+        tr:hover {
+            background-color: #505050; /* Fondo al pasar el mouse */
+        }
+
+        td a {
+            color: #1E90FF; /* Enlaces en azul claro */
+            text-decoration: none; /* Quita el subrayado */
+        }
+
+        td a:hover {
+            text-decoration: underline; /* Subrayado al pasar el mouse */
+        }
+    </style>
+</body>
+</html>
