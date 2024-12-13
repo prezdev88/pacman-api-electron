@@ -141,3 +141,15 @@ td a:hover {
 #app-list::-webkit-scrollbar-track {
     background: #252526;
 }
+
+.aur {
+    color: #749DED;
+    font-size: 10px;
+    vertical-align: top; 
+}
+
+.aur-title {
+    color: #749DED;
+    font-size: 15px;
+    vertical-align: top; 
+}

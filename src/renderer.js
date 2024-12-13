@@ -40,7 +40,7 @@ function updateAppList() {
     const appList = document.getElementById('app-list');
     appList.innerHTML = filteredApps.map(app => `
         <div class="p-2" data-name="${app.name}">
-            ${app.name}${app.source === "AUR" ? " (AUR)" : ""}
+            ${app.name}<span class='aur'>${app.source === "AUR" ? "  (AUR)" : ""}</span>
         </div>
     `).join('');
 
@@ -77,7 +77,7 @@ async function loadAppDetails(name) {
         const response = await axios.get(endpoint);
         const details = response.data.package;
 
-        document.getElementById('app-title').textContent = details.name + (app.source === "AUR" ? " (AUR)" : "");
+        document.getElementById('app-title').innerHTML = details.name + (app.source === "AUR" ? "<span class='aur-title'>(AUR)</span>" : "");
         document.getElementById('app-version').textContent = `v${details.version}`;
         document.getElementById('app-description').textContent = details.description;
 
