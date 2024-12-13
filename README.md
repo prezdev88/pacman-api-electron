@@ -13,3 +13,9 @@ rm -rf dist node_modules
 npm install
 npm run build
 ```
+
+# Run
+```bash
+mpm install
+mpn start
+```
