@@ -22,15 +22,6 @@ app.on('ready', () => {
     Menu.setApplicationMenu(menu);
 });
 
-// Registrar eventos globales de errores no capturados
-process.on('uncaughtException', (error) => {
-    log.error('Uncaught Exception:', error);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-    log.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
 // Plantilla del menú
 function createMenuTemplate() {
     return [

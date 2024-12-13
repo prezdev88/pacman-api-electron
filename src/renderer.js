@@ -173,3 +173,24 @@ function selectFirstApp() {
         }
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalInput = document.getElementById('modal-input');
+    const modalSubmit = document.getElementById('modal-submit');
+
+    // Mostrar el modal al cargar la aplicación
+    modalOverlay.style.display = 'flex';
+
+    // Manejar el botón "Submit"
+    modalSubmit.addEventListener('click', () => {
+        const userInput = modalInput.value.trim();
+        if (userInput) {
+            log.info(userInput);
+            ipcRenderer.send('root-password', userInput); // Enviar al proceso principal si es necesario
+            modalOverlay.style.display = 'none'; // Ocultar el modal
+        } else {
+            console.log('No input provided.');
+        }
+    });
+});
