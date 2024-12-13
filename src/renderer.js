@@ -13,8 +13,8 @@ loadData().then(() => {
 
 async function loadData() {
     try {
-        const nativeResponse = await axios.get('http://localhost:8080/api/v1/native/packages/installed/explicit/lite');
-        const aurResponse = await axios.get('http://localhost:8080/api/v1/foreign/packages/installed/explicit/lite');
+        const nativeResponse = await axios.get('http://localhost:8080/api/v1/native/packages/installed/explicit');
+        const aurResponse = await axios.get('http://localhost:8080/api/v1/foreign/packages/installed/explicit');
 
         const nativeApps = nativeResponse.data.packages.map(app => ({ ...app, source: "Native" }));
         const aurApps = aurResponse.data.packages.map(app => ({ ...app, source: "AUR" }));
@@ -139,7 +139,7 @@ document.getElementById('searchBar').addEventListener('keyup', (e) => {
     const query = e.target.value.toLowerCase();
 
     // Filtrar las aplicaciones basándose en el nombre
-    filteredApps = apps.filter(app => app.name.toLowerCase().includes(query));
+    filteredApps = apps.filter(app => app.name.toLowerCase().includes(query) || app.description.toLowerCase().includes(query));
 
     // Actualizar la lista con las aplicaciones filtradas
     updateAppList();
