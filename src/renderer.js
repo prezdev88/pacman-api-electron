@@ -146,7 +146,6 @@ document.getElementById('searchBar').addEventListener('keyup', (e) => {
 });
 
 function adjustAppListHeight() {
-    log.info("Adjusting app list height...");
     const searchBar = document.getElementById('searchBar');
     const appList = document.getElementById('app-list');
     const totalOffset = searchBar.offsetHeight + searchBar.offsetTop; // Altura + espacio desde arriba
