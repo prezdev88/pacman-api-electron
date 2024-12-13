@@ -20,6 +20,7 @@ async function loadData() {
         const aurApps = aurResponse.data.packages.map(app => ({ ...app, source: "AUR" }));
 
         apps = [...nativeApps, ...aurApps];
+        apps.sort((a, b) => a.name.localeCompare(b.name));
         filterApps();
     } catch (error) {
         console.error('Error fetching data:', error);
