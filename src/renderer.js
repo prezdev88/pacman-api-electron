@@ -62,7 +62,7 @@ function updateAppList() {
         // Seleccionar la primera app por defecto
         if (index === 0) {
             item.classList.add('selected');
-            loadAppDetails(item.dataset.name);
+            //loadAppDetails(item.dataset.name);
         }
     });
 }
