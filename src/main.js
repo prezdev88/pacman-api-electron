@@ -9,7 +9,6 @@ app.on('ready', () => {
         width: 1200,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'renderer.js'),
             contextIsolation: false,
             nodeIntegration: true,
         },
