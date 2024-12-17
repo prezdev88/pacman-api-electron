@@ -3,7 +3,7 @@ function renderAppList(packages) {
 
     // Generar el contenido HTML
     appListContainer.innerHTML = packages.map(app => `
-        <div class="p-2 ${app.installed ? 'installed' : 'not-installed'}" data-name="${app.name}">
+        <div class="p-2 nowrap ${app.installed ? 'installed' : 'not-installed'}" data-name="${app.name}">
             ${app.name} (${app.source})
         </div>
     `).join('');
