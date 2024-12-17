@@ -1,5 +1,3 @@
-const axios = require('axios');
-
 async function loadAppDetails(name) {
     log.info("LoadAppDetails: " + name);
 

@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 async function searchListener(e) {
     if (e.key !== 'Enter') {
         return;
@@ -17,8 +19,9 @@ async function searchListener(e) {
         log.info(endpoint);
 
         spinner.style.display = 'block';
-        const response = await fetch(endpoint);
-        const data = await response.json();
+        const response = await axios.get(endpoint);
+        log.info(response);
+        const data = await response.data;
 
         const packages = data.packages || [];
         renderAppList(packages);
