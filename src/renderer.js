@@ -2,55 +2,67 @@ const axios = require('axios');
 const { ipcRenderer } = require('electron');
 const log = require('electron-log');
 
-let apps = [];
-let filteredApps = [];
-let currentFilter = "All";
 
-// Llama a la función al final de la carga de datos
-loadData().then(() => {
-    selectFirstApp();
+// Ajustar el scroll al cargar y al redimensionar
+adjustAppListHeight();
+window.addEventListener('resize', adjustAppListHeight);
+window.addEventListener('load', adjustAppListHeight);
+
+// Filtrar apps desde el menú
+ipcRenderer.on('filter', (_, filter) => {
+    alert(filter);
 });
 
-async function loadData() {
-    try {
-        log.info("LOAD DATA");
-        const nativeResponse = await axios.get('http://localhost:8080/api/v1/native/packages/installed/explicit');
-        const aurResponse = await axios.get('http://localhost:8080/api/v1/foreign/packages/installed/explicit');
+// Mostrar About desde el menú
+ipcRenderer.on('about', () => {
+    alert('Electron App\nVersion 1.0\nDeveloped by You');
+});
 
-        const nativeApps = nativeResponse.data.packages.map(app => ({ ...app, source: "Native" }));
-        const aurApps = aurResponse.data.packages.map(app => ({ ...app, source: "AUR" }));
-
-        apps = [...nativeApps, ...aurApps];
-        apps.sort((a, b) => a.name.localeCompare(b.name));
-        filterApps();
-    } catch (error) {
-        console.error('Error fetching data:', error);
+document.getElementById('searchBar').addEventListener('keyup', async (e) => {
+    if (e.key !== 'Enter') {
+        return;
     }
-}
 
-function filterApps(query = "") {
-    filteredApps = apps.filter(app => {
-        const matchesQuery = app.name.toLowerCase().includes(query.toLowerCase());
-        const matchesFilter = currentFilter === "All" || app.source === currentFilter;
-        return matchesQuery && matchesFilter;
-    });
+    const input = e.target;
+    const query = input.value.trim(); // Obtener el valor del input
+    const spinner = document.getElementById('spinner');
 
-    updateAppList();
-}
+    if (query) {
+        try {
+            spinner.style.display = 'block'; // Mostrar spinner
+            const response = await fetch(`http://localhost:8080/api/v1/packages/${query}`);
+            const data = await response.json();
 
-function updateAppList() {
-    const appList = document.getElementById('app-list');
-    appList.innerHTML = filteredApps.map(app => `
-        <div class="p-2" data-name="${app.name}">
-            ${app.name}<span class='aur'>${app.source === "AUR" ? "  (AUR)" : ""}</span>
+            // Filtrar y renderizar los resultados
+            const packages = data.packages || [];
+            renderAppList(packages);
+        } catch (error) {
+            log.info('Error fetching packages:', error);
+            renderAppList([]); // Limpiar lista si hay error
+        } finally {
+            spinner.style.display = 'none'; // Ocultar spinner
+        }
+    }
+});
+
+// Función para renderizar la lista de aplicaciones
+function renderAppList(packages) {
+    const appListContainer = document.getElementById('app-list');
+
+    // Generar el contenido HTML
+    appListContainer.innerHTML = packages.map(app => `
+        <div class="p-2 ${app.installed ? 'installed' : 'not-installed'}" data-name="${app.name}">
+            ${app.name} (${app.source})
         </div>
     `).join('');
 
-    const appItems = document.querySelectorAll('#app-list > div');
-    appItems.forEach((item, index) => {
+    // Seleccionar todos los elementos de la lista
+    const appList = Array.from(appListContainer.children);
+
+    appList.forEach((item, index) => {
+        // Agregar el evento 'click' a cada elemento
         item.addEventListener('click', () => {
-            // Quitar la clase 'selected' de todos los elementos
-            appItems.forEach(i => i.classList.remove('selected'));
+            appList.forEach(i => i.classList.remove('selected'));
 
             // Agregar la clase 'selected' al elemento clickeado
             item.classList.add('selected');
@@ -62,29 +74,27 @@ function updateAppList() {
         // Seleccionar la primera app por defecto
         if (index === 0) {
             item.classList.add('selected');
-            //loadAppDetails(item.dataset.name);
+            // Uncomment if you want to load details of the first app by default
+            loadAppDetails(item.dataset.name);
         }
     });
 }
 
 async function loadAppDetails(name) {
-    const app = apps.find(app => app.name === name);
-    if (!app) return;
+    log.info("LoadAppDetails: " + name);
 
-    const endpoint = app.source === "Native"
-        ? `http://localhost:8080/api/v1/native/packages/${name}`
-        : `http://localhost:8080/api/v1/foreign/packages/${name}`;
-
+    const endpoint = `http://localhost:8080/api/v1/packages/info/${name}`;
+    log.info(endpoint);
     try {
         const response = await axios.get(endpoint);
-        const details = response.data.package;
+        const pack = response.data.pack;
 
-        document.getElementById('app-title').innerHTML = details.name + (app.source === "AUR" ? "<span class='aur-title'>(AUR)</span>" : "");
-        document.getElementById('app-version').textContent = `v${details.version}`;
-        document.getElementById('app-description').textContent = details.description;
+        document.getElementById('app-title').innerHTML = pack.name + "<span class='aur-title'> (" + pack.repository + ")</span>";
+        document.getElementById('app-version').textContent = `v${pack.version}`;
+        document.getElementById('app-description').textContent = pack.description;
 
         const table = document.getElementById('details-table');
-        table.innerHTML = Object.entries(details).map(([key, value]) => {
+        table.innerHTML = Object.entries(pack).map(([key, value]) => {
             if (key === 'url' && value) {
                 // Crear un enlace clickeable para las URLs
                 return `
@@ -121,30 +131,9 @@ async function loadAppDetails(name) {
             });
         });
     } catch (error) {
-        console.error('Error loading app details:', error);
+        log.info('Error loading app details:', error);
     }
 }
-
-// Filtrar apps desde el menú
-ipcRenderer.on('filter', (_, filter) => {
-    currentFilter = filter;
-    filterApps(document.querySelector('input').value);
-});
-
-// Mostrar About desde el menú
-ipcRenderer.on('about', () => {
-    alert('Electron App\nVersion 1.0\nDeveloped by You');
-});
-
-document.getElementById('searchBar').addEventListener('keyup', (e) => {
-    const query = e.target.value.toLowerCase();
-
-    // Filtrar las aplicaciones basándose en el nombre
-    filteredApps = apps.filter(app => app.name.toLowerCase().includes(query) || app.description.toLowerCase().includes(query));
-
-    // Actualizar la lista con las aplicaciones filtradas
-    updateAppList();
-});
 
 function adjustAppListHeight() {
     const searchBar = document.getElementById('searchBar');
@@ -158,19 +147,4 @@ function adjustAppListHeight() {
     const availableHeight = window.innerHeight - totalOffset - parentPaddingBottom;
 
     appList.style.height = `${availableHeight - 30}px`;
-}
-
-
-// Ajustar el scroll al cargar y al redimensionar
-adjustAppListHeight();
-window.addEventListener('resize', adjustAppListHeight);
-window.addEventListener('load', adjustAppListHeight);
-
-function selectFirstApp() {
-    if (filteredApps.length > 0) {
-        const firstAppElement = document.querySelector('#app-list > div');
-        if (firstAppElement) {
-            firstAppElement.click(); // Simula un clic en la primera app
-        }
-    }
 }

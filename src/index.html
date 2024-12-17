@@ -10,11 +10,17 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-3">
-                <input
-                    type="text"
-                    id="searchBar"
-                    placeholder="Search for apps..."
+                <div style="position: relative;">
+                    <input
+                        type="text"
+                        id="searchBar"
+                        placeholder="Search for apps..."
+                        style="width: 100%; padding: 10px; box-sizing: border-box;"
                     />
+
+                    <div id="spinner"></div>
+                </div>
+                
                 <div id="app-list" class="scrollable-list"></div>
             </div>
             <div class="col-9" id="details">
