@@ -24,6 +24,18 @@ async function loadAppDetails(name, installed) {
         document.getElementById('app-version').textContent = `v${pack.version}`;
         document.getElementById('app-description').textContent = pack.description;
 
+        if (pack.url.startsWith('http')) {
+            document.getElementById('url').innerHTML = `<a class="app-url" href="#" data-url='${pack.url}'>${pack.url}</a>`;
+        } else {
+            document.getElementById('url').innerHTML = "";
+        }
+        
+        if (pack.repository === 'aur') {
+            document.getElementById('aur-url').innerHTML = `<a class="app-url" href="#" data-url='${pack.aurUrl}'>${pack.aurUrl}</a>`;
+        } else {
+            document.getElementById('aur-url').innerHTML = "";
+        }
+
         const table = document.getElementById('details-table');
         table.innerHTML = Object.entries(pack).map(([key, value]) => {
             if (key === 'url' && value) {
@@ -31,7 +43,7 @@ async function loadAppDetails(name, installed) {
                 return `
                     <tr>
                         <td class="key">${key}</td>
-                        <td><a href="#" class="app-url" data-url="${value}" style="color: #00A8FF; text-decoration: underline;">${value}</a></td>
+                        <td><a href="#" class="app-url" data-url="${value}">${value}</a></td>
                     </tr>
                 `;
             }

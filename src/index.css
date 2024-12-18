@@ -239,3 +239,16 @@ td a:hover {
     padding-bottom: 5px;
     font-style: italic;
 }
+
+#app-title {
+    font-size: 30px;
+}
+
+.app-url {
+    color: #00A8FF; 
+    text-decoration: none;
+}
+
+#urls {
+    padding-bottom: 20px;
+}
