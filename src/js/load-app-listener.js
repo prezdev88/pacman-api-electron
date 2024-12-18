@@ -1,5 +1,5 @@
-async function loadAppDetails(name) {
-    log.info("LoadAppDetails: " + name);
+async function loadAppDetails(name, installed) {
+    log.info("LoadAppDetails: " + name + " " + installed);
 
     const endpoint = `http://localhost:8080/api/v1/packages/info/${name}`;
     log.info(endpoint);
@@ -7,7 +7,20 @@ async function loadAppDetails(name) {
         const response = await axios.get(endpoint);
         const pack = response.data.pack;
 
-        document.getElementById('app-title').innerHTML = pack.name + "<span class='aur-title'> (" + pack.repository + ")</span>";
+        // Determinar clases y símbolos
+        const appIconClass = installed === "true" ? 'installed-app-icon' : 'not-installed-app-icon';
+        const appIconSymbol = installed === "true" ? '● ' : '○ ';
+        const sourceClass = pack.repository === 'aur' ? 'aur-source-title' : 'source-title';
+
+        // Construir el HTML
+        const appTitleHTML = `
+            <span class="${appIconClass}">${appIconSymbol}</span>
+            ${pack.name}
+            <span class="${sourceClass}">(${pack.repository})</span>
+        `;
+
+        // Asignar al elemento
+        document.getElementById('app-title').innerHTML = appTitleHTML;
         document.getElementById('app-version').textContent = `v${pack.version}`;
         document.getElementById('app-description').textContent = pack.description;
 

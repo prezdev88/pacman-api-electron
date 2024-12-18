@@ -139,13 +139,25 @@ td a:hover {
     background: #252526;
 }
 
-.aur {
-    color: #749DED;
-    font-size: 10px;
+.source {
+    color: #74ed7a;
+    font-size: 12px;
     vertical-align: top; 
 }
 
-.aur-title {
+.aur-source {
+    color: #749DED;
+    font-size: 12px;
+    vertical-align: top; 
+}
+
+.source-title {
+    color: #74ed7a;
+    font-size: 15px;
+    vertical-align: top; 
+}
+
+.aur-source-title {
     color: #749DED;
     font-size: 15px;
     vertical-align: top; 
@@ -212,4 +224,18 @@ td a:hover {
     to {
         opacity: 0;
     }
+}
+
+.installed-app-icon {
+    color: #007f1c;
+}
+
+.not-installed-app-icon {
+    color: #ff6262;
+}
+
+#app-version {
+    font-size: 15px;
+    padding-bottom: 5px;
+    font-style: italic;
 }
