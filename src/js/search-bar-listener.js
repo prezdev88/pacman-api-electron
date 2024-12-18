@@ -26,7 +26,11 @@ async function searchListener(e) {
         const packages = data.packages || [];
         renderAppList(packages);
     } catch (error) {
-        log.info('Error fetching packages:', error);
+        log.error(error.response.status); 
+        log.error(error.response.data); 
+
+        showMessage("danger", `Package <strong>'${query}'</strong> not found!`);
+
         renderAppList([]);
     } finally {
         spinner.style.display = 'none';
