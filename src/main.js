@@ -1,10 +1,12 @@
 const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
-const log = require('electron-log');
+const { executeBin, stopBin } = require('./exec-backend');
 
 let mainWindow;
 
 app.on('ready', () => {
+    executeBin();
+
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 600,
@@ -16,12 +18,18 @@ app.on('ready', () => {
 
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-    // Crear menú
     const menu = Menu.buildFromTemplate(createMenuTemplate());
     Menu.setApplicationMenu(menu);
 });
 
-// Plantilla del menú
+app.on('window-all-closed', () => {
+    stopBin();
+
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
 function createMenuTemplate() {
     return [
         {

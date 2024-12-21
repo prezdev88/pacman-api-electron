@@ -1,3 +1,5 @@
 node_modules
 package-lock.json
 dist
+src/bin/pacman.log
+src/bin/pacman-api

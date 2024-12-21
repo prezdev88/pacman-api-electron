@@ -19,3 +19,6 @@ npm run build
 mpm install
 mpn start
 ```
+
+# Backend
+Paste pacman-api binary in src/bin
