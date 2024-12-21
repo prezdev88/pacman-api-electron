@@ -30,6 +30,12 @@
       "src/**/*",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "src/bin/",
+        "to": "bin/"
+      }
+    ],
     "mac": {
       "category": "public.app-category.developer-tools"
     },
