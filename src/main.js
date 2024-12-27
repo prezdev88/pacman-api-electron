@@ -35,9 +35,7 @@ function createMenuTemplate() {
         {
             label: 'View',
             submenu: [
-                { label: 'Native Packages', click: () => mainWindow.webContents.send('filter', 'Native') },
-                { label: 'AUR Packages', click: () => mainWindow.webContents.send('filter', 'AUR') },
-                { label: 'All Packages', click: () => mainWindow.webContents.send('filter', 'All') },
+                { label: 'Installed Packages', click: () => mainWindow.webContents.send('installed-apps') }
             ],
         },
         {

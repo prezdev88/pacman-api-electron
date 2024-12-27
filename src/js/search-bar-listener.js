@@ -14,7 +14,7 @@ async function searchListener(e) {
     }
 
     try {
-        const endpoint = `http://localhost:8080/api/v1/packages/${query}`;
+        const endpoint = `${ApiConfig.BASE_URL}/api/v1/packages/${query}`;
 
         log.info(endpoint);
 

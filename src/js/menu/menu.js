@@ -4,6 +4,6 @@ ipcRenderer.on('about', () => {
     alert("yayview v1.0");
 });
 
-ipcRenderer.on('filter', (_, filter) => {
-    alert(filter);
+ipcRenderer.on('installed-apps', () => {
+    alert("Hello installed apps");
 });

@@ -1,7 +1,7 @@
 async function loadAppDetails(name, installed) {
     log.info("LoadAppDetails: " + name + " " + installed);
 
-    const endpoint = `http://localhost:8080/api/v1/packages/info/${name}`;
+    const endpoint = `${ApiConfig.BASE_URL}/api/v1/packages/info/${name}`;
     log.info(endpoint);
     try {
         const response = await axios.get(endpoint);
